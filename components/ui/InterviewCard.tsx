@@ -4,14 +4,14 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-
-const InterviewCard = ({ interviewId, userId, role, type, techstack, createdAt }: InterviewCardProps) => {
-    const feedback = null as Feedback | null;
+const InterviewCard = async ({ id, userId, role, type, techstack, createdAt }: InterviewCardProps) => {
+    const feedback = userId && id
+    ? await getFeedbackByInterviewId({ interviewId: id, userId})
+    : null;
     const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
-    const formattedDate = dayjs(
-        feedback?.createdAt || createdAt || Date.now()
-      ).format("MMM D, YYYY");
+    const formattedDate = dayjs( feedback?.createdAt || createdAt || Date.now() ).format("MMM D, YYYY");
 
   return (
     <div className="card-border w-[360px] max-sm:w-full min-h-96">
@@ -23,8 +23,9 @@ const InterviewCard = ({ interviewId, userId, role, type, techstack, createdAt }
 
                 <img src={getRandomInterviewCover()} alt="cover-image" width={90} height={90} className="rounded-full object-fit size-[90px]" />
 
-
-                <h3 className="mt-5 capitalize">{role} Interview</h3>
+                <h3 className="mt-5 capitalize">
+                  {role} Interview
+                  </h3>
 
                 <div className="flex flex-row gap-5 mt-3">
                     <div className="flex flex-row gap-2">
@@ -39,8 +40,7 @@ const InterviewCard = ({ interviewId, userId, role, type, techstack, createdAt }
                 </div>
 
                 <p className="line-clamp-2 mt-5">
-            {feedback?.finalAssessment ||
-              "You haven't taken this interview yet. Take it now to improve your skills."}
+            {feedback?.finalAssessment || "You haven't taken this interview yet. Take it now to improve your skills."}
           </p>
             </div>
 
@@ -48,13 +48,10 @@ const InterviewCard = ({ interviewId, userId, role, type, techstack, createdAt }
                 <DisplayTechIcons techStack={techstack} />
 
                 <Button className="btn-primary">
-            <Link
-              href={
-                feedback
-                  ? `/interview/${interviewId}/feedback`
-                  : `/interview/${interviewId}`
-              }
-            >
+            <Link href={ feedback
+                  ? `/interview/${id}/feedback`
+                  : `/interview/${id}`
+              }>
               {feedback ? "Check Feedback" : "View Interview"}
             </Link>
           </Button>
@@ -63,5 +60,4 @@ const InterviewCard = ({ interviewId, userId, role, type, techstack, createdAt }
     </div>
   )
 }
-
 export default InterviewCard
