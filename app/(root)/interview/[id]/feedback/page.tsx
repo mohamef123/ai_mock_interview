@@ -9,6 +9,8 @@ import {
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
+import CopyButton from "@/components/CopyButton";
+import { cn } from "@/lib/utils";
 
 const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -111,6 +113,21 @@ const Feedback = async ({ params }: RouteParams) => {
             </p>
           </Link>
         </Button>
+
+        {/* Copy Feedback Button */}
+        <div className="flex-1 max-w-[200px]">
+          <CopyButton
+            text={`Feedback for ${interview.role} Interview:\n\n${
+              feedback?.finalAssessment || ""
+            }\n\nStrengths:\n${
+              feedback?.strengths?.join("\n") || ""
+            }\n\nAreas for Improvement:\n${
+              feedback?.areasForImprovement?.join("\n") || ""
+            }`}
+            className={cn("w-full btn-secondary")}
+            label="Copy Feedback"
+          />
+        </div>
       </div>
     </section>
   );

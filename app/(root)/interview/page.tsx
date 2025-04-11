@@ -1,4 +1,4 @@
-import Agent from "@/components/ui/Agent";
+import Agent from "@/components/Agent";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
 const Page = async () => {
